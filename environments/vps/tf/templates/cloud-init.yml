@@ -1,0 +1,33 @@
+#cloud-config
+users:
+  - name: ${host_username}
+    groups: users, admin
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ${host_ssh_key}
+packages:
+  - fail2ban
+  - ufw
+package_update: true
+package_upgrade: true
+write_files:
+  - path: /etc/ssh/sshd_config.d/ssh-hardening.conf
+    content: |
+      PermitRootLogin no
+      PasswordAuthentication no
+      Port ${host_ssh_port}
+      KbdInteractiveAuthentication no
+      ChallengeResponseAuthentication no
+      MaxAuthTries 3
+      AllowTcpForwarding no
+      X11Forwarding no
+      AllowAgentForwarding no
+      AuthorizedKeysFile .ssh/authorized_keys
+      AllowUsers ${host_username}
+runcmd:
+  - printf "[sshd]\nenabled = true\nport = ssh, ${host_ssh_port}\nbanaction = iptables-multiport" > /etc/fail2ban/jail.local
+  - systemctl enable fail2ban
+  - ufw allow ${host_ssh_port}
+  - ufw enable
+  - reboot
