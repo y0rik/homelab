@@ -34,20 +34,14 @@ resource "hcloud_firewall" "fw" {
   name = "${var.server_config["name"]}-fw"
   labels = local.tags
   
-  # allow https
-  rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "443"
-    source_ips = ["0.0.0.0/0"]
+  # create rules based on server config
+  dynamic "rule" {
+    for_each = split(",", var.server_config["allowed_incoming_ip_ports"])
+    content {
+      direction = "in"
+      protocol  = "tcp"
+      port      = rule.value
+      source_ips = ["0.0.0.0/0"]
+    }
   }
-
-  # allow non-standard ssh
-  rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = var.server_config["ssh_port"]
-    source_ips = ["0.0.0.0/0"]
-  }
-
 }
