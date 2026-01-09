@@ -1,0 +1,22 @@
+- name: Install prerequisite packages
+  ansible.builtin.apt:
+    name:
+      - open-iscsi
+      - nfs-common
+    state: present
+
+- name: Enable kernel modules
+  block:
+    - name: Enable nfs and dm_crypt kernel modules
+      ansible.builtin.lineinfile:
+        path: /etc/modules-load.d/longhorn.conf
+        line: "nfs\ndm_crypt"
+        create: true
+  
+- name: Enable and start required services
+  block:
+    - name: Enable and start iscsid service
+      ansible.builtin.service:
+        name: iscsid
+        enabled: true
+        state: started
