@@ -36,6 +36,10 @@ variable "memory" {
   type = number
   default = 2048
 }
+variable "memory_balooning" {
+  type = bool
+  default = true
+}
 variable "disk" {
   type = string
   default = "30"
@@ -60,7 +64,8 @@ variable "template_fullclone" {
 
 locals {
   vm_templates = {
-    "ubuntu"  = "ubuntu-cloud-noble"
-    "rocky"   = "rockylinux-cloud-10"
+    "ubuntu24"  = "ubuntu-cloud-noble"
+    "rocky10"   = "rockylinux-cloud-10"
+    "rocky9"   = "rockylinux-cloud-9"
   }
 }

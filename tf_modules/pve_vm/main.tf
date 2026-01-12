@@ -18,7 +18,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
   memory {
     dedicated = var.memory
-    floating  = var.memory # set equal to dedicated to enable ballooning
+    floating  = var.memory_balooning ? var.memory : 0 # set to memory if balooning is enabled
   }
   disk {
     datastore_id = var.storage
