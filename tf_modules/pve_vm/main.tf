@@ -14,7 +14,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
   cpu {
     cores        = var.cores
-    type         = "host"
+    type         = "x86-64-v3" # supports both Ryzen Zen3 & Intel Xeon 6gen
   }
   memory {
     dedicated = var.memory
